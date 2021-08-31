@@ -63,7 +63,8 @@ module system_top (
   inout           iic_scl,
   inout           iic_sda,
 
-  inout           gpio_bd,
+  inout           sweep_check,
+  inout           sync,
 
   input           rx_clk_in,
   input           rx_frame_in,
@@ -95,11 +96,13 @@ module system_top (
   assign gpio_i[16:15] = gpio_o[16:15];
   // instantiations
 
+  wire bb;
+
   ad_iobuf #(.DATA_WIDTH(15)) i_iobuf (
     .dio_t (gpio_t[14:0]),
     .dio_i (gpio_o[14:0]),
     .dio_o (gpio_i[14:0]),
-    .dio_p ({ gpio_bd,            // 14:14
+    .dio_p ({ bb,            // 14:14
               gpio_resetb,        // 13:13
               gpio_en_agc,        // 12:12
               gpio_ctl,           // 11: 8
@@ -150,7 +153,9 @@ module system_top (
     .tx_frame_out (tx_frame_out),
     .txnrx (txnrx),
     .up_enable (gpio_o[15]),
-    .up_txnrx (gpio_o[16]));
+    .up_txnrx (gpio_o[16]),
+    .sweep_check (sweep_check),
+    .sync (sync));
 
 endmodule
 
